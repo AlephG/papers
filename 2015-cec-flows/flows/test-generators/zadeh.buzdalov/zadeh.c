@@ -1,12 +1,14 @@
-/**
- * Generator of inputs for maximum flow according to Zadeh paper:
+
+ /**
+ * Modified version of Generator of inputs for maximum flow according to Zadeh paper:
  *
  * Zadeh N. Theoretical Efficiency of the Edmonds-Karp Algorithm for Computing Maximal Flows
  * // Journal of the ACM. 1972. Vol. 19, no. 1, pp. 184-192.
  *
  * You can run it as follows:
  * - zadeh 1 N - to generate a test with N nodes which requires N^3 / 27 augmentations
- * - zaden 2 N - to generate a test with N nodes which requires N^3 / 12 augmentations
+ * Does not include 2 N
+ * Removed characters to make cleaner and easier to use output
  */
 
 #include <stdio.h>
@@ -17,17 +19,16 @@ void usage() {
     fprintf(stderr, "Usage: zadeh <type> <nodes>\n");
     fprintf(stderr, "    where type is:\n");
     fprintf(stderr, "      1: for N^3/27 pattern from Zadeh\n");
-    fprintf(stderr, "      2: for N^3/12 pattern from Zadeh\n");
     exit(1);
 }
 
 void edge(int src, int trg, int cap) {
-    printf("a %d %d %d\n", src, trg, cap);
+    printf("%d %d %d\n", src, trg, cap); //remove 'a'
 }
 
 void gen27(int nodes) {
     int slot = nodes / 6;
-    int first = 1, last = slot * 6;
+    int first = 0, last = slot * 6; //start at 0
     int lOffset = slot + 1;
     int rOffset = 5 * slot;
     int i, j;
@@ -39,7 +40,11 @@ void gen27(int nodes) {
     printf("p max %d %d\n", nodes, edges);
     printf("n %d s\n", first);
     printf("n %d t\n", last);
-
+    
+    printf("Tester starts here\n");
+    printf("%d %d \n", first, last);
+    printf("%d \n", nodes);
+    
     int control = 0;
     for (i = 1; i <= slot; ++i) {
         int capacity = i == 1 ? 1 + 2 * slot : 2 + 4 * slot;
@@ -68,9 +73,6 @@ void gen27(int nodes) {
     }
 }
 
-void gen12(int nodes) {
-}
-
 int main(int argc, char *argv[]) {
     int type, nodes;
     if (argc != 3) {
@@ -78,7 +80,7 @@ int main(int argc, char *argv[]) {
     }
 
     type = atoi(argv[1]);
-    if (type < 1 || type > 2) {
+    if (type < 1 || type > 1) {
         fprintf(stderr, "Error: illegal test type: '%s'", argv[1]);
         usage();
     }
@@ -91,7 +93,6 @@ int main(int argc, char *argv[]) {
 
     switch (type) {
         case 1: gen27(nodes); break;
-        case 2: gen12(nodes); break;
     }
 
     return 0;
